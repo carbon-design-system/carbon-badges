@@ -2,7 +2,7 @@
 
 ## Development
 
-1. `yarn vercel:login` - First log in to Vercel so you can develop Vercel Serverless Functions locally by replicating the production environment on Vercel with your localhost.
+1. `yarn vercel:login` - First log in to Vercel so you can develop Vercel Serverless Functions locally by replicating the Vercel production environment with your localhost.
 
 1. `yarn vercel` - Select the `Carbon Design System` scope and link to `carbon-design-system/carbon-badges`. This triggers a build, but just a preview deployment so production is unaffected.
 
