@@ -72,6 +72,8 @@ module.exports = async (req, res) => {
     return res.json({ error: "Failed to exchange [code] for [access_token]." });
   }
 
+  console.log(response);
+
   if (!response || !response.access_token) {
     return res.json({ error: "Did not receive expected [access_token]." });
   }
