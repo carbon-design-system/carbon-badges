@@ -1,23 +1,24 @@
-import React from 'react';
-import { HomepageBanner, HomepageCallout } from 'gatsby-theme-carbon';
-import HomepageTemplate from 'gatsby-theme-carbon/src/templates/Homepage';
-import { calloutLink } from './Homepage.module.scss';
+import { HomepageBanner, HomepageCallout } from "gatsby-theme-carbon";
 
-import Carbon from '../../images/carbon.jpg';
+import Carbon from "../../images/carbon.jpg";
+import HomepageTemplate from "gatsby-theme-carbon/src/templates/Homepage";
+import React from "react";
+import { calloutLink } from "./Homepage.module.scss";
 
 const FirstLeftText = () => <p>Callout component</p>;
 
 const FirstRightText = () => (
   <p>
-    This is a callout component. You can edit the contents by updating the{' '}
+    This is a callout component. You can edit the contents by updating the{" "}
     <a href="https://github.com/carbon-design-system/gatsby-theme-carbon/blob/5fe12de31bb19fbfa2cab7c69cd942f55aa06f79/packages/example/src/gatsby-theme-carbon/templates/Homepage.js">
       pre-shadowed homepage template
     </a>
-    . You can also provide <code>color</code> and <code>backgroundColor</code>{' '}
+    . You can also provide <code>color</code> and <code>backgroundColor</code>{" "}
     props to suit your theme.
     <a
       className={calloutLink}
-      href="https://github.com/carbon-design-system/gatsby-theme-carbon/blob/master/packages/example/src/gatsby-theme-carbon/templates/Homepage.js">
+      href="https://github.com/carbon-design-system/gatsby-theme-carbon/blob/master/packages/example/src/gatsby-theme-carbon/templates/Homepage.js"
+    >
       Homepage source →
     </a>
   </p>
@@ -31,13 +32,14 @@ const SecondRightText = () => (
     props to the template or writing your own template.
     <a
       className={calloutLink}
-      href="https://github.com/carbon-design-system/gatsby-theme-carbon/blob/master/packages/example/src/gatsby-theme-carbon/templates/Homepage.js">
+      href="https://github.com/carbon-design-system/gatsby-theme-carbon/blob/master/packages/example/src/gatsby-theme-carbon/templates/Homepage.js"
+    >
       Homepage source →
     </a>
   </p>
 );
 
-const BannerText = () => <h1>Carbon Gatsby theme</h1>;
+const BannerText = () => <h1>Carbon Badges</h1>;
 
 const customProps = {
   Banner: <HomepageBanner renderText={BannerText} image={Carbon} />,

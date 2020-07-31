@@ -1,30 +1,31 @@
 module.exports = {
   siteMetadata: {
-    title: 'Gatsby Theme Carbon',
-    description: 'A Gatsby theme for the carbon design system',
-    keywords: 'gatsby,theme,carbon',
+    title: "Carbon Badges",
+    description: "A site to apply for Carbon badges.",
+    keywords: "carbon,design,system,badges,tutorial,acclaim",
+    lang: "en",
   },
-  pathPrefix: `/gtc`,
+  pathPrefix: ``,
   plugins: [
     {
-      resolve: 'gatsby-plugin-manifest',
+      resolve: "gatsby-plugin-manifest",
       options: {
-        name: 'Carbon Design Gatsby Theme',
-        short_name: 'Gatsby Theme Carbon',
-        start_url: '/',
-        background_color: '#ffffff',
-        theme_color: '#0062ff',
-        display: 'browser',
+        name: "Carbon Design System Badges",
+        short_name: "Carbon Badges",
+        start_url: "/",
+        background_color: "#ffffff",
+        theme_color: "#0062ff",
+        display: "browser",
       },
     },
     {
-      resolve: 'gatsby-theme-carbon',
+      resolve: "gatsby-theme-carbon",
       options: {
-        mediumAccount: 'carbondesign',
+        isSearchEnabled: false,
+        navigationStyle: "header",
         repository: {
-          baseUrl:
-            'https://github.com/carbon-design-system/gatsby-theme-carbon',
-          subDirectory: '/packages/example',
+          baseUrl: "https://github.com/carbon-design-system/carbon-badges",
+          branch: "main",
         },
       },
     },

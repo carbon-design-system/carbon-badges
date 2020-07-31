@@ -1,39 +1,29 @@
-import React from 'react';
-import Footer from 'gatsby-theme-carbon/src/components/Footer';
+import Footer from "gatsby-theme-carbon/src/components/Footer";
+import React from "react";
 
 const Content = ({ buildTime }) => (
   <>
     <p>
-      The <code>Content</code> component receives a <code>buildTime</code> prop
-      that to display your site's build time: {buildTime}
-    </p>
-    <p>
-      By importing the <strong>Footer</strong> component from
-      gatsby-theme-carbon, we can supply our own props.
-    </p>
-    <p>
-      The default export from a shadowed component will replace that component
-      in the theme.
-    </p>
-    <p>
-      <a href="https://www.gatsbyjs.org/docs/themes/api-reference/#component-shadowing">
-        More about component shadowing
-      </a>
+      Last updated {buildTime}
+      <br />
+      Copyright © {new Date().getFullYear()} IBM
     </p>
   </>
 );
 
 const links = {
   firstCol: [
-    { href: 'https://ibm.com/design', linkText: 'Shadowed link' },
-    { href: 'https://ibm.com/design', linkText: 'Shadowed link' },
-    { href: 'https://ibm.com/design', linkText: 'Shadowed link' },
+    {
+      href: "https://www.carbondesignsystem.com/how-to-contribute/overview",
+      linkText: "Contribute",
+    },
+    { href: "https://www.ibm.com/privacy", linkText: "Privacy" },
+    { href: "https://www.ibm.com/legal", linkText: "Terms of use" },
+    { href: "https://www.ibm.com/", linkText: "IBM.com" },
   ],
   secondCol: [
-    { href: 'https://ibm.com/design', linkText: 'Shadowed link' },
-    { href: 'https://ibm.com/design', linkText: 'Shadowed link' },
-    { href: 'https://ibm.com/design', linkText: 'Shadowed link' },
-    { href: 'https://ibm.com/design', linkText: 'Shadowed link' },
+    { href: "https://medium.com/carbondesign", linkText: "Medium" },
+    { href: "https://twitter.com/_carbondesign", linkText: "Twitter" },
   ],
 };
 
