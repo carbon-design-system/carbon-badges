@@ -1,31 +1,11 @@
-# Gatsby Theme Carbon Starter
+# Carbon Badges
 
-## What is this?
+## Development
 
-> Gatsby [themes](https://www.gatsbyjs.org/docs/themes/) encapsulate all of the
-> configuration and implementation details of Gatsby websites. This is a
-> starter-kit (boilerplate) with a dependancy on the `gatsby-theme-carbon`
-> package. The primary goal of `gatsby-theme-carbon` is to get content authors
-> speaking the IBM Design Language with Carbon as soon as possible. It includes
-> some sample components/content demos in the `src/pages` directory.
+1. `yarn vercel:login` - First log in to Vercel so you can develop Vercel Serverless Functions locally by replicating the production environment on Vercel with your localhost.
 
-## How do I use it?
+1. `yarn vercel` - Select the `Carbon Design System` scope and link to `carbon-design-system/carbon-badges`. This triggers a build, but just a preview deployment so production is unaffected.
 
-Check out our quick
-[getting started](https://gatsby-theme-carbon.now.sh/getting-started) guide and
-video!
+1. `yarn vercel:env:pull` to have the Vercel CLI create your development `.env` file.
 
-`gatsby-theme-carbon` at it’s core relies on [mdx](https://mdxjs.com/) for page
-creation. Check out the `src/pages` directory for some examples for using mdx.
-
-A key feature of Gatsby themes is component shadowing. By simply placing a
-component into the `src/gatsby-theme-carbon/components` location, you can
-override components used by the theme. You can read more about component
-shadowing
-[here](https://www.gatsbyjs.org/docs/themes/api-reference#component-shadowing).
-
-You’re also free to make your own components and use them in your MDX pages.
-
-## What’s Next?
-
-[Check out the docs!](https://gatsby-theme-carbon.now.sh)
+1. `yarn vercel:dev` - Runs `yarn dev` alongside Vercel functions.

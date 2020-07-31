@@ -3,18 +3,28 @@
   "private": true,
   "version": "1.26.4",
   "license": "Apache 2.0",
+  "engines": {
+    "node": "12.x"
+  },
   "scripts": {
     "dev": "gatsby develop -H 0.0.0.0",
     "dev:clean": "yarn clean && yarn develop",
     "build": "gatsby build",
     "build:clean": "yarn clean && gatsby build",
     "serve": "gatsby serve",
-    "clean": "gatsby clean"
+    "clean": "gatsby clean",
+    "vercel": "vercel",
+    "vercel:dev": "vercel dev",
+    "vercel:env:pull": "vercel env pull",
+    "vercel:login": "vercel login"
   },
   "dependencies": {
+    "dotenv": "^8.2.0",
     "gatsby": "^2.20.4",
     "gatsby-theme-carbon": "^1.26.4",
+    "node-fetch": "^2.6.0",
     "react": "^16.13.1",
-    "react-dom": "^16.13.1"
+    "react-dom": "^16.13.1",
+    "vercel": "^19.2.0"
   }
 }
