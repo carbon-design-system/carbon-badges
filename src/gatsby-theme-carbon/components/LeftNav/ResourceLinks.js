@@ -1,4 +1,4 @@
-import BadgeForm from "../../../components/BadgeForm";
+import AuthForm from "../../../components/AuthForm";
 import React from "react";
 import ResourceLinks from "gatsby-theme-carbon/src/components/LeftNav/ResourceLinks";
 
@@ -16,7 +16,7 @@ const links = [
 const CustomResources = () => {
   return (
     <>
-      <BadgeForm />
+      <AuthForm />
       <ResourceLinks shouldOpenNewTabs links={links} />
     </>
   );

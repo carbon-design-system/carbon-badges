@@ -2,33 +2,28 @@ import React, { useEffect, useState } from "react";
 
 import { useAuth } from "../../util/hooks/use-auth.js";
 
-const BadgeForm = () => {
-  const [emails, setEmails] = useState([]);
+const AuthForm = () => {
+  const [user, setUser] = useState({});
   const { login, logout, token } = useAuth();
 
   useEffect(() => {
     if (!token) return;
 
-    fetch(`/api/github/user-emails?access_token=${token}`, {
+    fetch(`/api/github/user?access_token=${token}`, {
       method: "GET",
       credentials: "include",
       mode: "no-cors",
     })
       .then((response) => response.json())
       .then((data) => {
-        setEmails(data || []);
+        setUser(data);
       });
   }, [token]);
 
   if (token) {
     return (
       <>
-        <div>Emails:</div>
-        <ul>
-          {emails.map((email) => (
-            <li key={email.email}>{email.email}</li>
-          ))}
-        </ul>
+        {user.login && <div>Logged in as @{user.login}</div>}
         <button onClick={() => logout()} type="button">
           Log out
         </button>
@@ -43,4 +38,4 @@ const BadgeForm = () => {
   );
 };
 
-export default BadgeForm;
+export default AuthForm;
