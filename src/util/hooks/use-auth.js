@@ -2,6 +2,8 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 
 import { navigate } from "gatsby";
 
+const isBrowser = typeof window !== "undefined";
+
 const AuthContext = createContext();
 
 export const ProvideAuth = ({ children }) => {
@@ -15,17 +17,21 @@ export const useAuth = () => {
 
 const useProvideAuth = () => {
   const [token, setToken] = useState(
-    sessionStorage.getItem("github-auth-token") || ""
+    isBrowser ? sessionStorage.getItem("github-auth-token") || "" : ""
   );
 
   useEffect(() => {
-    sessionStorage.setItem("github-auth-token", token);
+    if (isBrowser) {
+      sessionStorage.setItem("github-auth-token", token);
+    }
   }, [token]);
 
   const authorize = (location) => {
     const urlParams = new URLSearchParams(location.search);
     const accessToken = urlParams.get("access_token");
-    const redirectTo = sessionStorage.getItem("github-redirect-to") || "/";
+    const redirectTo = isBrowser
+      ? sessionStorage.getItem("github-redirect-to") || "/"
+      : "/";
 
     if (accessToken) {
       setToken(accessToken);
@@ -38,7 +44,9 @@ const useProvideAuth = () => {
 
   const login = () => {
     // TODO pass in location and redirect to `location.pathname`
-    sessionStorage.setItem("github-redirect-to", "/");
+    if (isBrowser) {
+      sessionStorage.setItem("github-redirect-to", "/");
+    }
 
     window.location.href = `/api/github/authorize`;
   };
