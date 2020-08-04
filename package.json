@@ -21,7 +21,7 @@
   "dependencies": {
     "dotenv": "^8.2.0",
     "gatsby": "^2.20.4",
-    "gatsby-theme-carbon": "^1.26.4",
+    "gatsby-theme-carbon": "1.26.6",
     "node-fetch": "^2.6.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",

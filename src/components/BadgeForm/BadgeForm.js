@@ -1,10 +1,13 @@
+import { Button, SkeletonText } from "carbon-components-react";
 import React, { useEffect, useState } from "react";
 
+import { ArrowRight32 } from "@carbon/icons-react";
+import style from "./BadgeForm.module.scss";
 import { useAuth } from "../../util/hooks/use-auth.js";
 
 const BadgeForm = () => {
   const [emails, setEmails] = useState([]);
-  const { login, logout, token } = useAuth();
+  const { login, token } = useAuth();
 
   useEffect(() => {
     if (!token) return;
@@ -20,26 +23,38 @@ const BadgeForm = () => {
       });
   }, [token]);
 
-  if (token) {
+  if (!token) {
     return (
-      <>
-        <div>Emails:</div>
-        <ul>
-          {emails.map((email) => (
-            <li key={email.email}>{email.email}</li>
-          ))}
-        </ul>
-        <button onClick={() => logout()} type="button">
-          Log out
-        </button>
-      </>
+      <div className={style.container}>
+        <Button
+          className={style.button}
+          onClick={() => login()}
+          renderIcon={ArrowRight32}
+          size="field"
+          type="button"
+        >
+          Log in with GitHub
+        </Button>
+      </div>
+    );
+  }
+
+  if (emails.length === 0) {
+    return (
+      <div className={style.container}>
+        <SkeletonText paragraph={true} width="320px" />
+      </div>
     );
   }
 
   return (
-    <button onClick={() => login()} type="button">
-      Log in with GitHub
-    </button>
+    <div className={style.container}>
+      <ul>
+        {emails.map((email) => (
+          <li key={email.email}>{email.email}</li>
+        ))}
+      </ul>
+    </div>
   );
 };
 

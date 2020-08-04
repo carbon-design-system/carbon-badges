@@ -24,7 +24,7 @@ module.exports = {
         isSearchEnabled: false,
         repository: {
           baseUrl: "https://github.com/carbon-design-system/carbon-badges",
-          branch: "main",
+          branch: "master",
         },
       },
     },
