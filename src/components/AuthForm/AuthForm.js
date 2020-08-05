@@ -2,10 +2,12 @@ import { Button, SkeletonText } from "carbon-components-react";
 import React, { useEffect, useState } from "react";
 
 import { ArrowRight32 } from "@carbon/icons-react";
+import PropTypes from "prop-types";
+import classNames from "classnames";
 import style from "./AuthForm.module.scss";
 import { useAuth } from "../../util/hooks/use-auth.js";
 
-const AuthForm = () => {
+const AuthForm = ({ primary = false }) => {
   const [user, setUser] = useState({});
   const { login, logout, token } = useAuth();
 
@@ -14,8 +16,6 @@ const AuthForm = () => {
 
     fetch(`/api/github/user?access_token=${token}`, {
       method: "GET",
-      credentials: "include",
-      mode: "no-cors",
     })
       .then((response) => response.json())
       .then((data) => {
@@ -23,25 +23,44 @@ const AuthForm = () => {
       });
   }, [token]);
 
+  const cnButton = (kind) => {
+    return classNames(style.button, {
+      [style.buttonFull]: kind === "secondary",
+    });
+  };
+
+  const renderButton = (kind = "secondary") => {
+    if (token && kind === "primary") return null;
+
+    return (
+      <Button
+        className={cnButton(kind)}
+        kind={kind}
+        onClick={() => (token ? logout() : login())}
+        renderIcon={token ? null : ArrowRight32}
+        size="field"
+        type="button"
+      >
+        {token ? "Log out" : "Log in with GitHub"}
+      </Button>
+    );
+  };
+
+  if (primary) {
+    return renderButton("primary");
+  }
+
   if (token) {
     return (
       <div className={style.container}>
-        <p className={style.copy}>
+        <div className={style.section}>
           {!user.login ? (
             <SkeletonText className={style.skeleton} />
           ) : (
-            <span>Logged in as @{user.login}.</span>
+            <p className={style.copy}>Logged in as @{user.login}.</p>
           )}
-        </p>
-        <Button
-          className={style.button}
-          kind="secondary"
-          onClick={() => logout()}
-          size="field"
-          type="button"
-        >
-          Log out
-        </Button>
+        </div>
+        {renderButton()}
       </div>
     );
   }
@@ -53,18 +72,13 @@ const AuthForm = () => {
         Don't have a GitHub account?{" "}
         <a href="https://github.com/join">Join GitHub</a>
       </p>
-      <Button
-        className={style.button}
-        kind="secondary"
-        onClick={() => login()}
-        renderIcon={ArrowRight32}
-        size="field"
-        type="button"
-      >
-        Log in with GitHub
-      </Button>
+      {renderButton()}
     </div>
   );
 };
 
 export default AuthForm;
+
+AuthForm.propTypes = {
+  primary: PropTypes.bool,
+};

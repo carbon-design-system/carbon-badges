@@ -4,7 +4,7 @@ module.exports = async (req, res) => {
   const { access_token: accessToken } = req.query;
 
   if (!accessToken) {
-    return res.json({
+    return res.status(400).json({
       error: "Did not get expected query string named [access_token].",
     });
   }

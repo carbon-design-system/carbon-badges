@@ -2,15 +2,18 @@
   padding: $spacing-06 $spacing-05 $spacing-05;
 }
 
+.section {
+  margin-top: $spacing-02;
+  padding-bottom: $spacing-08;
+  border-bottom: 1px solid var(--cds-ui-03, #e0e0e0);
+}
+
 .heading {
   color: var(--cds-text-01, #161616);
   @include carbon--type-style("productive-heading-04");
 }
 
 .copy {
-  margin-top: $spacing-02;
-  padding-bottom: $spacing-08;
-  border-bottom: 1px solid var(--cds-ui-03, #e0e0e0);
   @include carbon--type-style("body-short-01");
 }
 
@@ -21,5 +24,8 @@
 
 .button.button {
   margin-top: $spacing-05;
-  width: 100%;
+
+  &--full {
+    width: 100%;
+  }
 }
