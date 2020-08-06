@@ -7,16 +7,16 @@ import {
 } from "carbon-components-react";
 import { Column, Row } from "gatsby-theme-carbon";
 import { Controller, useForm } from "react-hook-form";
-import { H2, P } from "gatsby-theme-carbon/src/components/markdown";
 import React, { useEffect, useState } from "react";
 
+import { H2 } from "gatsby-theme-carbon/src/components/markdown";
 import badgeConfig from "../../../config/badges";
 import style from "./BadgeForm.module.scss";
 import { useAuth } from "../../util/hooks/use-auth.js";
 
 const cleanPRs = (prs) => {
   return prs.map((pr) => {
-    const { number, state, title, url } = pr;
+    const { number, state, title, html_url } = pr;
 
     const approved = pr.labels.reduce((approved, label) => {
       if (label.name === "status: approved") {
@@ -37,9 +37,13 @@ const cleanPRs = (prs) => {
     return {
       number,
       state,
-      status: approved ? "approved" : correction ? "correction" : "",
+      status: approved
+        ? "approved"
+        : correction
+        ? "correction"
+        : "not-reviewed",
       step: step ? step[0] : "",
-      url,
+      url: html_url,
     };
   });
 };
@@ -48,17 +52,11 @@ const BadgeForm = () => {
   const [emails, setEmails] = useState([]);
   const [steps, setSteps] = useState([]);
   const { token } = useAuth();
-  const {
-    handleSubmit,
-    watch,
-    errors,
-    control,
-    formState,
-    setError,
-    clearErrors,
-  } = useForm({
-    mode: "onChange",
-  });
+  const { handleSubmit, watch, errors, control, formState, setError } = useForm(
+    {
+      mode: "onChange",
+    }
+  );
 
   const selectedTutorial = watch("badge", {});
 
@@ -73,16 +71,14 @@ const BadgeForm = () => {
   }, [token]);
 
   useEffect(() => {
-    setError("stepsInput", {
-      type: "manual",
-      message: "All five pull requests must be approved to receive the badge.",
-    });
-  }, [setError]);
-
-  useEffect(() => {
     if (!selectedTutorial.id) {
       return;
     }
+
+    setError("badge", {
+      type: "manual",
+      message: "A pull request for each step 1 - 5 must be approved.",
+    });
 
     const preSetSteps = (prs) => {
       const items = cleanPRs(prs)
@@ -95,11 +91,11 @@ const BadgeForm = () => {
           return 0;
         });
 
-      // find first of each step
+      // TODO
+      // one of each step
       // if not found, inset one
       // if all found, clear error
 
-      clearErrors("stepsInput");
       setSteps(items);
     };
 
@@ -110,7 +106,7 @@ const BadgeForm = () => {
       .then((data) => {
         preSetSteps(data.items || []);
       });
-  }, [clearErrors, selectedTutorial, token]);
+  }, [selectedTutorial, token]);
 
   const onSubmit = (values) => console.log(values);
 
@@ -121,11 +117,6 @@ const BadgeForm = () => {
       <Row>
         <Column colLg={8}>
           <H2>Badge application</H2>
-          <P>
-            IBM Digital Badges are available upon completing all five steps of
-            each Carbon tutorial. The badges are available to anybody — not just
-            IBM employees.
-          </P>
         </Column>
       </Row>
       <Row>
@@ -134,32 +125,7 @@ const BadgeForm = () => {
             <SkeletonText paragraph={true} width="320px" />
           ) : (
             <form method="post" onSubmit={handleSubmit(onSubmit)}>
-              <div className={style.field}>
-                <Controller
-                  control={control}
-                  name="email"
-                  rules={{ required: true }}
-                  render={({ onChange, value }) => (
-                    <Dropdown
-                      id="email"
-                      invalid={!!errors.email}
-                      selectedItem={value}
-                      onChange={(item) => onChange(item.selectedItem)}
-                      invalidText="A value is required."
-                      ariaLabel="Email dropdown"
-                      titleText="Email address"
-                      label="Choose an email address"
-                      helperText="Don't see your work email address? Verify it in GitHub email settings to use here."
-                      items={emails
-                        .filter((email) => email.verified)
-                        .map((email) => email.email)}
-                      light={true}
-                    />
-                  )}
-                />
-              </div>
-
-              <div className={style.field}>
+              <div>
                 <Controller
                   control={control}
                   name="badge"
@@ -170,7 +136,10 @@ const BadgeForm = () => {
                       invalid={!!errors.badge}
                       selectedItem={value}
                       onChange={(item) => onChange(item.selectedItem)}
-                      invalidText="A value is required."
+                      invalidText={
+                        (errors.badge && errors.badge.message) ||
+                        "A value is required."
+                      }
                       ariaLabel="Badge dropdown"
                       titleText="Carbon tutorial"
                       label="Choose a badge"
@@ -217,6 +186,31 @@ const BadgeForm = () => {
                     }
                   ></InlineNotification>
                 ))}
+              </div>
+
+              <div className={style.field}>
+                <Controller
+                  control={control}
+                  name="email"
+                  rules={{ required: true }}
+                  render={({ onChange, value }) => (
+                    <Dropdown
+                      id="email"
+                      invalid={!!errors.email}
+                      selectedItem={value}
+                      onChange={(item) => onChange(item.selectedItem)}
+                      invalidText="A value is required."
+                      ariaLabel="Email dropdown"
+                      titleText="Email address"
+                      label="Choose an email address"
+                      helperText="Don't see your work email address? Verify it in GitHub email settings to use here."
+                      items={emails
+                        .filter((email) => email.verified)
+                        .map((email) => email.email)}
+                      light={true}
+                    />
+                  )}
+                />
               </div>
 
               <div className={style.field}>
