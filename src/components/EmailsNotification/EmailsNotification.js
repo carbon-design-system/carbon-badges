@@ -21,7 +21,9 @@ const EmailsNotification = () => {
 
   if (!token || emails.length === 0) return null;
 
-  const emailArray = emails.map((email) => email.email);
+  const emailArray = emails
+    .filter((email) => email.verified)
+    .map((email) => email.email);
 
   return (
     <InlineNotification>

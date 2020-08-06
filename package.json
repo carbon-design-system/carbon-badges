@@ -26,6 +26,7 @@
     "node-fetch": "^2.6.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-hook-form": "^6.3.0",
     "vercel": "^19.2.0"
   }
 }
