@@ -1,0 +1,5 @@
+.copy {
+  padding: $spacing-04 $spacing-05;
+  color: var(--cds-text-01, #f4f4f4);
+  @include carbon--type-style("body-long-02");
+}

@@ -67,11 +67,13 @@ const AuthForm = ({ primary = false }) => {
 
   return (
     <div className={style.container}>
-      <h2 className={style.heading}>Log in</h2>
-      <p className={style.copy}>
-        Don't have a GitHub account?{" "}
-        <a href="https://github.com/join">Join GitHub</a>
-      </p>
+      <div className={style.section}>
+        <h2 className={style.heading}>Log in</h2>
+        <p className={style.copy}>
+          Don't have a GitHub account?{" "}
+          <a href="https://github.com/join">Join GitHub</a>
+        </p>
+      </div>
       {renderButton()}
     </div>
   );

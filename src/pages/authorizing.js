@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 
+import style from "./authorizing.module.scss";
 import { useAuth } from "../util/hooks/use-auth.js";
 
 const Authorizing = ({ location }) => {
@@ -9,11 +10,7 @@ const Authorizing = ({ location }) => {
     authorize(location);
   }, [authorize, location]);
 
-  return (
-    <>
-      <p style={{ color: "#fff" }}>Authorizing with GitHub, please wait...</p>
-    </>
-  );
+  return <p className={style.copy}>Authorizing with GitHub, please wait...</p>;
 };
 
 export default Authorizing;
