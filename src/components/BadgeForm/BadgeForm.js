@@ -1,9 +1,9 @@
 import {
   Button,
   Dropdown,
+  InlineNotification,
   SkeletonText,
   TextArea,
-  TextInput,
 } from "carbon-components-react";
 import { Column, Row } from "gatsby-theme-carbon";
 import { Controller, useForm } from "react-hook-form";
@@ -14,36 +14,103 @@ import badgeConfig from "../../../config/badges";
 import style from "./BadgeForm.module.scss";
 import { useAuth } from "../../util/hooks/use-auth.js";
 
+const cleanPRs = (prs) => {
+  return prs.map((pr) => {
+    const { number, state, title, url } = pr;
+
+    const approved = pr.labels.reduce((approved, label) => {
+      if (label.name === "status: approved") {
+        approved = true;
+      }
+      return approved;
+    }, false);
+
+    const correction = pr.labels.reduce((correction, label) => {
+      if (label.name === "status: needs correction") {
+        correction = true;
+      }
+      return correction;
+    }, false);
+
+    const step = title.toLowerCase().match(/step \d/gi);
+
+    return {
+      number,
+      state,
+      status: approved ? "approved" : correction ? "correction" : "",
+      step: step ? step[0] : "",
+      url,
+    };
+  });
+};
+
 const BadgeForm = () => {
   const [emails, setEmails] = useState([]);
+  const [steps, setSteps] = useState([]);
   const { token } = useAuth();
   const {
-    register,
     handleSubmit,
     watch,
     errors,
-    formState,
     control,
-  } = useForm();
+    formState,
+    setError,
+    clearErrors,
+  } = useForm({
+    mode: "onChange",
+  });
+
+  const selectedTutorial = watch("badge", {});
 
   useEffect(() => {
     if (!token) return;
 
-    fetch(`/api/github/user-emails?access_token=${token}`, {
-      method: "GET",
-    })
+    fetch(`/api/github/user-emails?access_token=${token}`)
       .then((response) => response.json())
       .then((data) => {
         setEmails(data || []);
       });
   }, [token]);
 
-  const badgeItems = Object.keys(badgeConfig).map((name) => {
-    return {
-      id: name,
-      text: badgeConfig[name].label,
+  useEffect(() => {
+    setError("stepsInput", {
+      type: "manual",
+      message: "All five pull requests must be approved to receive the badge.",
+    });
+  }, [setError]);
+
+  useEffect(() => {
+    if (!selectedTutorial.id) {
+      return;
+    }
+
+    const preSetSteps = (prs) => {
+      const items = cleanPRs(prs)
+        .filter((item) => item.step)
+        .sort((a, b) => {
+          if (a.step < b.step) return -1;
+          if (a.step > b.step) return 1;
+          if (a.status < b.status) return -1;
+          if (a.status > b.status) return 1;
+          return 0;
+        });
+
+      // find first of each step
+      // if not found, inset one
+      // if all found, clear error
+
+      clearErrors("stepsInput");
+      setSteps(items);
     };
-  });
+
+    fetch(
+      `/api/github/pull-requests?access_token=${token}&tutorial=${selectedTutorial.id}`
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        preSetSteps(data.items || []);
+      });
+  }, [clearErrors, selectedTutorial, token]);
 
   const onSubmit = (values) => console.log(values);
 
@@ -107,7 +174,12 @@ const BadgeForm = () => {
                       ariaLabel="Badge dropdown"
                       titleText="Carbon tutorial"
                       label="Choose a badge"
-                      items={badgeItems}
+                      items={Object.keys(badgeConfig).map((name) => {
+                        return {
+                          id: name,
+                          text: badgeConfig[name].label,
+                        };
+                      })}
                       itemToString={(item) => (item ? item.text : "")}
                       light={true}
                     />
@@ -116,16 +188,47 @@ const BadgeForm = () => {
               </div>
 
               <div className={style.field}>
-                <TextInput
+                {steps.map((step, i) => (
+                  <InlineNotification
+                    key={i}
+                    hideCloseButton={true}
+                    kind={
+                      step.status === "approved"
+                        ? "success"
+                        : step.status === "correction"
+                        ? "error"
+                        : "warning"
+                    }
+                    lowContrast={true}
+                    title={
+                      step.step.charAt(0).toUpperCase() + step.step.slice(1)
+                    }
+                    subtitle={
+                      <span>
+                        <a href={step.url} rel="noreferrer" target="_blank">
+                          PR #{step.number}
+                        </a>{" "}
+                        {step.status === "approved"
+                          ? "approved."
+                          : step.status === "correction"
+                          ? "needs correction."
+                          : "not reviewed."}
+                      </span>
+                    }
+                  ></InlineNotification>
+                ))}
+              </div>
+
+              <div className={style.field}>
+                <TextArea
                   id="questionHowDescribe"
                   name="questionHowDescribe"
                   invalid={!!errors.questionHowDescribe}
                   invalidText="A value is required."
-                  labelText="How would you describe the tutorial in one or more words?"
+                  labelText="How would you describe the tutorial in one or more words? (Optional)"
+                  rows={3}
                   light={true}
-                  ref={register({
-                    required: true,
-                  })}
+                  disabled={!formState.isValid}
                 />
               </div>
 
@@ -135,12 +238,10 @@ const BadgeForm = () => {
                   name="questionLikeBest"
                   invalid={!!errors.questionLikeBest}
                   invalidText="A value is required."
-                  labelText="What did you like best about the tutorial?"
+                  labelText="What did you like best about the tutorial? (Optional)"
                   rows={3}
                   light={true}
-                  ref={register({
-                    required: true,
-                  })}
+                  disabled={!formState.isValid}
                 />
               </div>
 
@@ -150,12 +251,10 @@ const BadgeForm = () => {
                   name="questionHowImprove"
                   invalid={!!errors.questionHowImprove}
                   invalidText="A value is required."
-                  labelText="How can we improve the tutorial?"
+                  labelText="How can we improve the tutorial? (Optional)"
                   rows={3}
                   light={true}
-                  ref={register({
-                    required: true,
-                  })}
+                  disabled={!formState.isValid}
                 />
               </div>
 
@@ -165,12 +264,10 @@ const BadgeForm = () => {
                   name="questionSuggestion"
                   invalid={!!errors.questionSuggestion}
                   invalidText="A value is required."
-                  labelText="Anything you'd like help with going forward? Future tutorial topics?"
+                  labelText="Anything you'd like help with going forward? Future tutorial topics? (Optional)"
                   rows={3}
                   light={true}
-                  ref={register({
-                    required: true,
-                  })}
+                  disabled={!formState.isValid}
                 />
               </div>
 
@@ -182,10 +279,16 @@ const BadgeForm = () => {
                   labelText="Anything else you'd like to share with the Carbon team? (Optional)"
                   rows={3}
                   light={true}
+                  disabled={!formState.isValid}
                 />
               </div>
 
-              <Button className={style.button} size="field" type="submit">
+              <Button
+                className={style.button}
+                disabled={!formState.isValid}
+                size="field"
+                type="submit"
+              >
                 Apply for badge
               </Button>
             </form>
