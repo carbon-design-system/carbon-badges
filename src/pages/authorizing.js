@@ -1,27 +1,16 @@
 import React, { useEffect } from "react";
 
-import { navigate } from "gatsby";
+import style from "./authorizing.module.scss";
+import { useAuth } from "../util/hooks/use-auth.js";
 
 const Authorizing = ({ location }) => {
+  const { authorize } = useAuth();
+
   useEffect(() => {
-    const urlParams = new URLSearchParams(location.search);
-    const accessToken = urlParams.get("access_token");
-    const redirectTo = sessionStorage.getItem("github-redirect-to");
+    authorize(location);
+  }, [authorize, location]);
 
-    if (accessToken) {
-      sessionStorage.setItem("github-auth-token", accessToken);
-    }
-
-    navigate(redirectTo || "/", {
-      replace: true,
-    });
-  }, [location.search]);
-
-  return (
-    <>
-      <p style={{ color: "#fff" }}>Authorizing with GitHub, please wait...</p>
-    </>
-  );
+  return <p className={style.copy}>Authorizing with GitHub, please wait...</p>;
 };
 
 export default Authorizing;

@@ -4,12 +4,12 @@ module.exports = async (req, res) => {
   const { access_token: accessToken } = req.query;
 
   if (!accessToken) {
-    return res.status(400).json({
+    return res.json({
       error: "Did not get expected query string named [access_token].",
     });
   }
 
-  const response = await fetch("https://api.github.com/user/emails", {
+  const response = await fetch("https://api.github.com/user", {
     method: "GET",
     headers: {
       authorization: `token ${accessToken}`,

@@ -1,13 +1,26 @@
+import AuthForm from "../components/AuthForm";
 import BadgeForm from "../components/BadgeForm";
+import MyBadges from "../components/MyBadges";
+import EmailsNotification from "../components/EmailsNotification";
 import HomepageTemplate from "gatsby-theme-carbon/src/templates/Homepage";
 export default HomepageTemplate;
 
-## MDX content starts here
-
 <PageDescription>
 
-The homepage content here lives in the `src/pages/index.mdx` directory at the root of your project. Just like the other mdx pages, you can use all of our theme components here without importing them. Review the [MDX example source](https://github.com/carbon-design-system/gatsby-theme-carbon/blob/master/packages/example/src/pages/index.mdx).
+The Carbon Design System offers IBM Digital Badges based on completion of the <a href="https://www.carbondesignsystem.com/tutorial/angular/overview">Angular</a>, <a href="https://www.carbondesignsystem.com/tutorial/react/overview">React</a>, and <a href="https://www.carbondesignsystem.com/tutorial/vue/overview">Vue</a> tutorials. Log in with GitHub to view and apply for Carbon badges.
 
 </PageDescription>
 
+<EmailsNotification />
+
+<MyBadges />
+
 <BadgeForm />
+
+<Row>
+<Column>
+
+<AuthForm primary={true} />
+
+</Column>
+</Row>
