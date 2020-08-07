@@ -1,6 +1,7 @@
 import {
   Button,
   Dropdown,
+  InlineLoading,
   InlineNotification,
   SkeletonText,
   TextArea,
@@ -51,13 +52,20 @@ const cleanPRs = (prs) => {
 const BadgeForm = () => {
   const [emails, setEmails] = useState([]);
   const [steps, setSteps] = useState([]);
+  const [stepsLoading, setStepsLoading] = useState(false);
   const { token } = useAuth();
-  const { handleSubmit, watch, errors, control, formState, setError } = useForm(
-    {
-      mode: "onChange",
-    }
-  );
-
+  const {
+    handleSubmit,
+    watch,
+    errors,
+    control,
+    formState,
+    setError,
+    clearErrors,
+    register,
+  } = useForm({
+    mode: "onChange",
+  });
   const selectedTutorial = watch("badge", {});
 
   useEffect(() => {
@@ -75,12 +83,9 @@ const BadgeForm = () => {
       return;
     }
 
-    setError("badge", {
-      type: "manual",
-      message: "A pull request for each step 1 - 5 must be approved.",
-    });
-
     const preSetSteps = (prs) => {
+      // filter PRs by "step x" title and sort by step then status (approved
+      // first, then needs correction, then not reviewed)
       const items = cleanPRs(prs)
         .filter((item) => item.step)
         .sort((a, b) => {
@@ -91,13 +96,38 @@ const BadgeForm = () => {
           return 0;
         });
 
-      // TODO
-      // one of each step
-      // if not found, inset one
-      // if all found, clear error
+      // grab the first PR for each step and backfill missing steps
+      const uniqueItems = [];
+      for (let i = 1; i <= 5; i++) {
+        const foundItem = items.find((item) => item.step.includes(i));
+        if (foundItem) {
+          uniqueItems.push(foundItem);
+        } else {
+          uniqueItems.push({
+            status: "not-found",
+            step: "Step " + i,
+          });
+        }
+      }
 
-      setSteps(items);
+      const hasError = uniqueItems.reduce((error, item) => {
+        return error ? true : item.status !== "approved";
+      }, false);
+
+      if (hasError) {
+        setError("badge", {
+          type: "manual",
+          message: "A pull request for each step 1 - 5 must be approved.",
+        });
+      } else {
+        clearErrors("badge");
+      }
+
+      setSteps(uniqueItems);
     };
+
+    setSteps([]);
+    setStepsLoading(true);
 
     fetch(
       `/api/github/pull-requests?access_token=${token}&tutorial=${selectedTutorial.id}`
@@ -105,10 +135,11 @@ const BadgeForm = () => {
       .then((response) => response.json())
       .then((data) => {
         preSetSteps(data.items || []);
+        setStepsLoading(false);
       });
-  }, [selectedTutorial, token]);
+  }, [clearErrors, selectedTutorial, setError, token]);
 
-  const onSubmit = (values) => console.log(values);
+  const onSubmit = (values) => alert(JSON.stringify(values, null, 2));
 
   if (!token) return null;
 
@@ -133,7 +164,7 @@ const BadgeForm = () => {
                   render={({ onChange, value }) => (
                     <Dropdown
                       id="badge"
-                      invalid={!!errors.badge}
+                      invalid={!!errors.badge && !stepsLoading}
                       selectedItem={value}
                       onChange={(item) => onChange(item.selectedItem)}
                       invalidText={
@@ -157,6 +188,13 @@ const BadgeForm = () => {
               </div>
 
               <div className={style.field}>
+                {stepsLoading && (
+                  <InlineLoading
+                    description="Searching GitHub..."
+                    iconDescription="Searching GitHub"
+                    status="active"
+                  />
+                )}
                 {steps.map((step, i) => (
                   <InlineNotification
                     key={i}
@@ -174,14 +212,20 @@ const BadgeForm = () => {
                     }
                     subtitle={
                       <span>
-                        <a href={step.url} rel="noreferrer" target="_blank">
-                          PR #{step.number}
-                        </a>{" "}
+                        {step.number && (
+                          <>
+                            <a href={step.url} rel="noreferrer" target="_blank">
+                              PR #{step.number}
+                            </a>{" "}
+                          </>
+                        )}
                         {step.status === "approved"
                           ? "approved."
                           : step.status === "correction"
                           ? "needs correction."
-                          : "not reviewed."}
+                          : step.status === "not-reviewed"
+                          ? "not reviewed."
+                          : "not found."}
                       </span>
                     }
                   ></InlineNotification>
@@ -223,6 +267,7 @@ const BadgeForm = () => {
                   rows={3}
                   light={true}
                   disabled={!formState.isValid}
+                  ref={register}
                 />
               </div>
 
@@ -236,6 +281,7 @@ const BadgeForm = () => {
                   rows={3}
                   light={true}
                   disabled={!formState.isValid}
+                  ref={register}
                 />
               </div>
 
@@ -249,6 +295,7 @@ const BadgeForm = () => {
                   rows={3}
                   light={true}
                   disabled={!formState.isValid}
+                  ref={register}
                 />
               </div>
 
@@ -262,6 +309,7 @@ const BadgeForm = () => {
                   rows={3}
                   light={true}
                   disabled={!formState.isValid}
+                  ref={register}
                 />
               </div>
 
@@ -274,6 +322,7 @@ const BadgeForm = () => {
                   rows={3}
                   light={true}
                   disabled={!formState.isValid}
+                  ref={register}
                 />
               </div>
 
