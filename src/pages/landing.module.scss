@@ -1,0 +1,19 @@
+.heading {
+  margin-top: $spacing-07;
+  @include carbon--type-style("expressive-heading-05", true);
+}
+
+.button {
+  width: 100%;
+  margin-top: $spacing-09;
+}
+
+.copy {
+  margin-top: $spacing-05;
+  @include carbon--type-style("body-short-01");
+}
+
+.pictogram {
+  margin: $spacing-07 0;
+  width: 100%;
+}

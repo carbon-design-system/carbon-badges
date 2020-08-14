@@ -18,3 +18,18 @@ body {
   display: flex;
   justify-content: flex-end;
 }
+
+// revert header nav overrides
+.container--header--nav:not(.container--homepage) .bx--grid {
+  @include carbon--breakpoint("lg") {
+    padding-left: calc(25% + 2rem);
+  }
+  @include carbon--breakpoint("max") {
+    padding-left: 400px;
+  }
+}
+
+// for pictogram positioning
+#main-content > .bx--grid {
+  position: relative;
+}

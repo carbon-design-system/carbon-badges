@@ -1,14 +1,22 @@
 import DefaultTemplate from "gatsby-theme-carbon/src/templates/Default";
+import LandingPage from "../../pages/landing";
 import React from "react";
+import { useAuth } from "../../util/hooks/use-auth.js";
 
-const HomeTitle = () => <span>Badges</span>;
+const ShadowedHomepage = (props) => {
+  const { token } = useAuth();
 
-const customProps = {
-  Title: HomeTitle,
+  const HomeTitle = () => <span>Badges</span>;
+
+  const customProps = {
+    Title: HomeTitle,
+  };
+
+  return token ? (
+    <DefaultTemplate {...props} {...customProps} />
+  ) : (
+    <LandingPage />
+  );
 };
-
-function ShadowedHomepage(props) {
-  return <DefaultTemplate {...props} {...customProps} />;
-}
 
 export default ShadowedHomepage;
