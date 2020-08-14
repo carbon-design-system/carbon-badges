@@ -53,6 +53,10 @@ const useProvideAuth = () => {
 
   const logout = () => {
     setToken("");
+
+    navigate("/", {
+      replace: true,
+    });
   };
 
   return {

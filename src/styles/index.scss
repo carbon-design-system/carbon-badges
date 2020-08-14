@@ -2,3 +2,19 @@
 body {
   font-family: "IBM Plex Sans VF", "Helvetica Neue", Arial, sans-serif;
 }
+
+// move log out link to right
+.bx--header__nav {
+  width: 100%;
+
+  // hide divider
+  &::before {
+    content: none;
+  }
+}
+
+// move log out link to right
+.bx--header__menu-bar {
+  display: flex;
+  justify-content: flex-end;
+}
