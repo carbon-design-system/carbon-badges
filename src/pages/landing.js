@@ -1,13 +1,23 @@
+import React, { useEffect } from "react";
+
 import { ArrowRight32 } from "@carbon/icons-react";
 import { Button } from "carbon-components-react";
 import Layout from "gatsby-theme-carbon/src/components/Layout";
-import React from "react";
+import { navigate } from "gatsby";
 import pictogram from "../images/carbon-pictogram-gradient.png";
 import style from "./landing.module.scss";
 import { useAuth } from "../util/hooks/use-auth.js";
 
 const Landing = () => {
-  const { login } = useAuth();
+  const { login, token } = useAuth();
+
+  useEffect(() => {
+    if (token) {
+      navigate("/badges", {
+        replace: true,
+      });
+    }
+  }, [token]);
 
   return (
     <Layout homepage>
