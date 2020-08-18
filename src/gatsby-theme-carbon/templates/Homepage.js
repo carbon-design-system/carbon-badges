@@ -10,6 +10,7 @@ const ShadowedHomepage = (props) => {
 
   const customProps = {
     Title: HomeTitle,
+    homepage: false,
   };
 
   return token ? (
