@@ -50,6 +50,20 @@ const cleanPRs = (prs) => {
   });
 };
 
+const getAcclaimError = (data) => {
+  if (!data || !data.errors) return "";
+
+  const [error] = data.errors;
+
+  if (error.attribute === "recipient_email") {
+    return "Recipient email already has this badge.";
+  } else if (error.attribute === "user_id") {
+    return "User already has this badge.";
+  }
+
+  return "An error occurred.";
+};
+
 const BadgeForm = () => {
   const [emails, setEmails] = useState([]);
   const [steps, setSteps] = useState([]);
@@ -155,6 +169,20 @@ const BadgeForm = () => {
       .then((data) => {
         console.log(data);
         setSubmitLoading(false);
+
+        const acclaimError = getAcclaimError(data.data);
+
+        if (data.error) {
+          setError("email", {
+            type: "submit",
+            message: data.error,
+          });
+        } else if (acclaimError) {
+          setError("email", {
+            type: "submit",
+            message: acclaimError,
+          });
+        }
       });
   };
 
@@ -260,7 +288,10 @@ const BadgeForm = () => {
                       invalid={!!errors.email}
                       selectedItem={value}
                       onChange={(item) => onChange(item.selectedItem)}
-                      invalidText="A value is required."
+                      invalidText={
+                        (errors.email && errors.email.message) ||
+                        "A value is required."
+                      }
                       ariaLabel="Email dropdown"
                       titleText="Email address"
                       label="Choose an email address"
@@ -283,7 +314,6 @@ const BadgeForm = () => {
                   labelText="How would you describe the tutorial in one or more words? (Optional)"
                   rows={3}
                   light={true}
-                  disabled={!formState.isValid}
                   ref={register}
                 />
               </div>
@@ -297,7 +327,6 @@ const BadgeForm = () => {
                   labelText="What did you like best about the tutorial? (Optional)"
                   rows={3}
                   light={true}
-                  disabled={!formState.isValid}
                   ref={register}
                 />
               </div>
@@ -311,7 +340,6 @@ const BadgeForm = () => {
                   labelText="How can we improve the tutorial? (Optional)"
                   rows={3}
                   light={true}
-                  disabled={!formState.isValid}
                   ref={register}
                 />
               </div>
@@ -325,7 +353,6 @@ const BadgeForm = () => {
                   labelText="Anything you'd like help with going forward? Future tutorial topics? (Optional)"
                   rows={3}
                   light={true}
-                  disabled={!formState.isValid}
                   ref={register}
                 />
               </div>
@@ -338,10 +365,21 @@ const BadgeForm = () => {
                   labelText="Anything else you'd like to share with the Carbon team? (Optional)"
                   rows={3}
                   light={true}
-                  disabled={!formState.isValid}
                   ref={register}
                 />
               </div>
+
+              {formState.isSubmitted && errors.email && (
+                <div className={style.field}>
+                  <InlineNotification
+                    hideCloseButton={true}
+                    kind="error"
+                    lowContrast={true}
+                    title="Error"
+                    subtitle={errors.email.message}
+                  />
+                </div>
+              )}
 
               <div className={style.actions}>
                 <Button
