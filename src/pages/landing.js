@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 
 import { ArrowRight32 } from "@carbon/icons-react";
 import { Button } from "carbon-components-react";
+import { Helmet } from "react-helmet";
 import Layout from "gatsby-theme-carbon/src/components/Layout";
 import { navigate } from "gatsby";
 import pictogram from "../images/carbon-pictogram-gradient.png";
@@ -21,6 +22,7 @@ const Landing = () => {
 
   return (
     <Layout homepage>
+      <Helmet title="Carbon Badges" />
       <div class="bx--grid bx--grid--full-width">
         <div class="bx--row">
           <div class="bx--col-lg-8 bx--col-md-7">

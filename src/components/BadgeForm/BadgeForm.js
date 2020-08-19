@@ -3,6 +3,7 @@ import {
   Dropdown,
   InlineLoading,
   InlineNotification,
+  NotificationActionButton,
   SkeletonText,
   TextArea,
 } from "carbon-components-react";
@@ -53,6 +54,7 @@ const BadgeForm = () => {
   const [emails, setEmails] = useState([]);
   const [steps, setSteps] = useState([]);
   const [stepsLoading, setStepsLoading] = useState(false);
+  const [submitLoading, setSubmitLoading] = useState(false);
   const { token } = useAuth();
   const {
     handleSubmit,
@@ -139,7 +141,22 @@ const BadgeForm = () => {
       });
   }, [clearErrors, selectedTutorial, setError, token]);
 
-  const onSubmit = (values) => alert(JSON.stringify(values, null, 2));
+  const onSubmit = (values) => {
+    setSubmitLoading(true);
+
+    fetch(`/api/github/badge-issue?access_token=${token}`, {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(values),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        setSubmitLoading(false);
+      });
+  };
 
   if (!token) return null;
 
@@ -326,14 +343,22 @@ const BadgeForm = () => {
                 />
               </div>
 
-              <Button
-                className={style.button}
-                disabled={!formState.isValid}
-                size="field"
-                type="submit"
-              >
-                Apply for badge
-              </Button>
+              <div className={style.actions}>
+                <Button
+                  disabled={!formState.isValid || submitLoading}
+                  size="field"
+                  type="submit"
+                >
+                  Apply for badge
+                </Button>
+                {submitLoading && (
+                  <InlineLoading
+                    description="Applying..."
+                    iconDescription="Applying"
+                    status="active"
+                  />
+                )}
+              </div>
             </form>
           )}
         </Column>
