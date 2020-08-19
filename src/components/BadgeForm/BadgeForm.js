@@ -69,6 +69,7 @@ const BadgeForm = () => {
   const [steps, setSteps] = useState([]);
   const [stepsLoading, setStepsLoading] = useState(false);
   const [submitLoading, setSubmitLoading] = useState(false);
+  const [acceptUrl, setAcceptUrl] = useState("");
   const { token } = useAuth();
   const {
     handleSubmit,
@@ -79,6 +80,7 @@ const BadgeForm = () => {
     setError,
     clearErrors,
     register,
+    reset,
   } = useForm({
     mode: "onChange",
   });
@@ -157,6 +159,7 @@ const BadgeForm = () => {
 
   const onSubmit = (values) => {
     setSubmitLoading(true);
+    setAcceptUrl("");
 
     fetch(`/api/github/badge-issue?access_token=${token}`, {
       method: "POST",
@@ -182,6 +185,13 @@ const BadgeForm = () => {
             type: "submit",
             message: acclaimError,
           });
+        } else if (data.data && data.data["accept_badge_url"]) {
+          reset({
+            badge: "",
+            email: "",
+          });
+          setSteps([]);
+          setAcceptUrl(data.data["accept_badge_url"]);
         }
       });
   };
@@ -377,6 +387,24 @@ const BadgeForm = () => {
                     lowContrast={true}
                     title="Error"
                     subtitle={errors.email.message}
+                  />
+                </div>
+              )}
+
+              {acceptUrl && (
+                <div className={style.field}>
+                  <InlineNotification
+                    actions={
+                      <NotificationActionButton
+                        onClick={() => (window.location.href = acceptUrl)}
+                      >
+                        Accept badge
+                      </NotificationActionButton>
+                    }
+                    kind="success"
+                    lowContrast={true}
+                    title="Success"
+                    subtitle="Your badge has been issued. You'll receive an email to accept the badge."
                   />
                 </div>
               )}

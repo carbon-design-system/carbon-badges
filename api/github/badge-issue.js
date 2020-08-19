@@ -65,14 +65,9 @@ module.exports = async (req, res) => {
     }
   ).then((response) => response.json());
 
-  console.log(badgesResponse);
-  // console.log(user);
-  // console.log(badgeConfig);
-
-  // post to acclaim
-  // send feedback to surveygizmo
-  // send error
-  // send error
+  if (badgesResponse.data && badgesResponse.data["accept_badge_url"]) {
+    // TODO post to survey gizmo
+  }
 
   res.status(200).send(badgesResponse);
 };
