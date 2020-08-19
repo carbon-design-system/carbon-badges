@@ -7,7 +7,7 @@ module.exports = async (req, res) => {
   const { access_token: accessToken } = req.query;
 
   const {
-    badge: { id: badge }, // angular, react, or vue
+    badge: { id: badge }, // `angular`, `react`, or `vue`
     email,
     questionHowDescribe,
     questionLikeBest,
@@ -45,6 +45,7 @@ module.exports = async (req, res) => {
     });
   }
 
+  // issue badge
   const badgesResponse = await fetch(
     `https://api.youracclaim.com/v1/organizations/${process.env.ACCLAIM_ORGANIZATION}/badges`,
     {
@@ -65,8 +66,24 @@ module.exports = async (req, res) => {
     }
   ).then((response) => response.json());
 
+  // if success, send feedback to SurveyGizmo
   if (badgesResponse.data && badgesResponse.data["accept_badge_url"]) {
-    // TODO post to survey gizmo
+    await fetch(process.env.SURVEYGIZMO_REQUEST_URI, {
+      method: "PUT",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        data: {
+          "2": { value: badgeConfig[badge].label },
+          "3": { value: questionHowDescribe },
+          "4": { value: questionLikeBest },
+          "5": { value: questionHowImprove },
+          "6": { value: questionSuggestion },
+          "7": { value: questionFreeform },
+        },
+      }),
+    });
   }
 
   res.status(200).send(badgesResponse);
