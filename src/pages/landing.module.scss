@@ -1,0 +1,31 @@
+.heading {
+  margin-top: $spacing-07;
+  @include carbon--type-style("expressive-paragraph-01", true);
+  @include carbon--breakpoint("md") {
+    @include carbon--type-style("expressive-heading-05", true);
+  }
+
+  a {
+    color: $inverse-link;
+    text-decoration-thickness: 1px;
+  }
+}
+
+.button {
+  width: 100%;
+  margin-top: $spacing-09;
+}
+
+.copy {
+  margin-top: $spacing-05;
+  @include carbon--type-style("body-short-01");
+
+  a {
+    color: $inverse-link;
+  }
+}
+
+.pictogram {
+  margin: $spacing-07 0;
+  width: 100%;
+}

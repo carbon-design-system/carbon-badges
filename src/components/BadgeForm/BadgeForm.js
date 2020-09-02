@@ -3,6 +3,7 @@ import {
   Dropdown,
   InlineLoading,
   InlineNotification,
+  NotificationActionButton,
   SkeletonText,
   TextArea,
 } from "carbon-components-react";
@@ -49,10 +50,26 @@ const cleanPRs = (prs) => {
   });
 };
 
+const getAcclaimError = (data) => {
+  if (!data || !data.errors) return "";
+
+  const [error] = data.errors;
+
+  if (error.attribute === "recipient_email") {
+    return "Recipient email already has this badge.";
+  } else if (error.attribute === "user_id") {
+    return "User already has this badge.";
+  }
+
+  return "An error occurred.";
+};
+
 const BadgeForm = () => {
   const [emails, setEmails] = useState([]);
   const [steps, setSteps] = useState([]);
   const [stepsLoading, setStepsLoading] = useState(false);
+  const [submitLoading, setSubmitLoading] = useState(false);
+  const [acceptUrl, setAcceptUrl] = useState("");
   const { token } = useAuth();
   const {
     handleSubmit,
@@ -63,6 +80,7 @@ const BadgeForm = () => {
     setError,
     clearErrors,
     register,
+    reset,
   } = useForm({
     mode: "onChange",
   });
@@ -139,7 +157,44 @@ const BadgeForm = () => {
       });
   }, [clearErrors, selectedTutorial, setError, token]);
 
-  const onSubmit = (values) => alert(JSON.stringify(values, null, 2));
+  const onSubmit = (values) => {
+    setSubmitLoading(true);
+    setAcceptUrl("");
+
+    fetch(`/api/github/badge-issue?access_token=${token}`, {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(values),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        setSubmitLoading(false);
+
+        const acclaimError = getAcclaimError(data.data);
+
+        if (data.error) {
+          setError("email", {
+            type: "submit",
+            message: data.error,
+          });
+        } else if (acclaimError) {
+          setError("email", {
+            type: "submit",
+            message: acclaimError,
+          });
+        } else if (data.data && data.data["accept_badge_url"]) {
+          reset({
+            badge: "",
+            email: "",
+          });
+          setSteps([]);
+          setAcceptUrl(data.data["accept_badge_url"]);
+        }
+      });
+  };
 
   if (!token) return null;
 
@@ -243,7 +298,10 @@ const BadgeForm = () => {
                       invalid={!!errors.email}
                       selectedItem={value}
                       onChange={(item) => onChange(item.selectedItem)}
-                      invalidText="A value is required."
+                      invalidText={
+                        (errors.email && errors.email.message) ||
+                        "A value is required."
+                      }
                       ariaLabel="Email dropdown"
                       titleText="Email address"
                       label="Choose an email address"
@@ -266,7 +324,6 @@ const BadgeForm = () => {
                   labelText="How would you describe the tutorial in one or more words? (Optional)"
                   rows={3}
                   light={true}
-                  disabled={!formState.isValid}
                   ref={register}
                 />
               </div>
@@ -280,7 +337,6 @@ const BadgeForm = () => {
                   labelText="What did you like best about the tutorial? (Optional)"
                   rows={3}
                   light={true}
-                  disabled={!formState.isValid}
                   ref={register}
                 />
               </div>
@@ -294,7 +350,6 @@ const BadgeForm = () => {
                   labelText="How can we improve the tutorial? (Optional)"
                   rows={3}
                   light={true}
-                  disabled={!formState.isValid}
                   ref={register}
                 />
               </div>
@@ -308,7 +363,6 @@ const BadgeForm = () => {
                   labelText="Anything you'd like help with going forward? Future tutorial topics? (Optional)"
                   rows={3}
                   light={true}
-                  disabled={!formState.isValid}
                   ref={register}
                 />
               </div>
@@ -321,19 +375,56 @@ const BadgeForm = () => {
                   labelText="Anything else you'd like to share with the Carbon team? (Optional)"
                   rows={3}
                   light={true}
-                  disabled={!formState.isValid}
                   ref={register}
                 />
               </div>
 
-              <Button
-                className={style.button}
-                disabled={!formState.isValid}
-                size="field"
-                type="submit"
-              >
-                Apply for badge
-              </Button>
+              {formState.isSubmitted && errors.email && (
+                <div className={style.field}>
+                  <InlineNotification
+                    hideCloseButton={true}
+                    kind="error"
+                    lowContrast={true}
+                    title="Error"
+                    subtitle={errors.email.message}
+                  />
+                </div>
+              )}
+
+              {acceptUrl && (
+                <div className={style.field}>
+                  <InlineNotification
+                    actions={
+                      <NotificationActionButton
+                        onClick={() => (window.location.href = acceptUrl)}
+                      >
+                        Accept badge
+                      </NotificationActionButton>
+                    }
+                    kind="success"
+                    lowContrast={true}
+                    title="Success"
+                    subtitle="Your badge has been issued. You'll receive an email to accept the badge."
+                  />
+                </div>
+              )}
+
+              <div className={style.actions}>
+                <Button
+                  disabled={!formState.isValid || submitLoading}
+                  size="field"
+                  type="submit"
+                >
+                  Apply for badge
+                </Button>
+                {submitLoading && (
+                  <InlineLoading
+                    description="Applying..."
+                    iconDescription="Applying"
+                    status="active"
+                  />
+                )}
+              </div>
             </form>
           )}
         </Column>

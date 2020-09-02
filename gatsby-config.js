@@ -22,6 +22,7 @@ module.exports = {
       resolve: "gatsby-theme-carbon",
       options: {
         isSearchEnabled: false,
+        navigationStyle: "header",
         repository: {
           baseUrl: "https://github.com/carbon-design-system/carbon-badges",
           branch: "master",

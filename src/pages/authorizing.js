@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 
-import style from "./authorizing.module.scss";
+import style from "./pages.module.scss";
 import { useAuth } from "../util/hooks/use-auth.js";
 
 const Authorizing = ({ location }) => {
