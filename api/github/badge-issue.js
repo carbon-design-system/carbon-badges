@@ -100,7 +100,7 @@ module.exports = async (req, res) => {
         type: "section",
         text: {
           type: "mrkdwn",
-          text: `:${badge}: A *${badgeConfig.badges[badge].label}* badge was issued. :${badge}:`,
+          text: `:${badge}: *${badgeConfig.badges[badge].label}* badge was issued :${badge}:`,
         },
       },
     ];
@@ -108,7 +108,7 @@ module.exports = async (req, res) => {
     blocks[0].text.text += Object.keys(badgeConfig.questions)
       .map((question) => {
         return req.body[question]
-          ? `\n>${badgeConfig.questions[question]}\n>*${req.body[question]}*`
+          ? `\n>*${badgeConfig.questions[question]}*\n>${req.body[question]}`
           : "";
       })
       .join("");
