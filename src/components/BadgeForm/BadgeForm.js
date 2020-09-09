@@ -229,10 +229,10 @@ const BadgeForm = () => {
                       ariaLabel="Badge dropdown"
                       titleText="Carbon tutorial"
                       label="Choose a badge"
-                      items={Object.keys(badgeConfig).map((name) => {
+                      items={Object.keys(badgeConfig.badges).map((name) => {
                         return {
                           id: name,
-                          text: badgeConfig[name].label,
+                          text: badgeConfig.badges[name].label,
                         };
                       })}
                       itemToString={(item) => (item ? item.text : "")}
@@ -315,69 +315,20 @@ const BadgeForm = () => {
                 />
               </div>
 
-              <div className={style.field}>
-                <TextArea
-                  id="questionHowDescribe"
-                  name="questionHowDescribe"
-                  invalid={!!errors.questionHowDescribe}
-                  invalidText="A value is required."
-                  labelText="How would you describe the tutorial in one or more words? (Optional)"
-                  rows={3}
-                  light={true}
-                  ref={register}
-                />
-              </div>
-
-              <div className={style.field}>
-                <TextArea
-                  id="questionLikeBest"
-                  name="questionLikeBest"
-                  invalid={!!errors.questionLikeBest}
-                  invalidText="A value is required."
-                  labelText="What did you like best about the tutorial? (Optional)"
-                  rows={3}
-                  light={true}
-                  ref={register}
-                />
-              </div>
-
-              <div className={style.field}>
-                <TextArea
-                  id="questionHowImprove"
-                  name="questionHowImprove"
-                  invalid={!!errors.questionHowImprove}
-                  invalidText="A value is required."
-                  labelText="How can we improve the tutorial? (Optional)"
-                  rows={3}
-                  light={true}
-                  ref={register}
-                />
-              </div>
-
-              <div className={style.field}>
-                <TextArea
-                  id="questionSuggestion"
-                  name="questionSuggestion"
-                  invalid={!!errors.questionSuggestion}
-                  invalidText="A value is required."
-                  labelText="Anything you'd like help with going forward? Future tutorial topics? (Optional)"
-                  rows={3}
-                  light={true}
-                  ref={register}
-                />
-              </div>
-
-              <div className={style.field}>
-                <TextArea
-                  id="questionFreeform"
-                  name="questionFreeform"
-                  invalidText="A value is required."
-                  labelText="Anything else you'd like to share with the Carbon team? (Optional)"
-                  rows={3}
-                  light={true}
-                  ref={register}
-                />
-              </div>
+              {Object.keys(badgeConfig.questions).map((question) => (
+                <div className={style.field}>
+                  <TextArea
+                    id={question}
+                    name={question}
+                    invalid={!!errors[question]}
+                    invalidText="A value is required."
+                    labelText={`${badgeConfig.questions[question]} (Optional)`}
+                    rows={3}
+                    light={true}
+                    ref={register}
+                  />
+                </div>
+              ))}
 
               {formState.isSubmitted && errors.email && (
                 <div className={style.field}>

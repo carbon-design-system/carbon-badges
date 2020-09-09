@@ -12,7 +12,7 @@ module.exports = async (req, res) => {
     });
   }
 
-  if (!tutorial || !badgeConfig[tutorial]) {
+  if (!tutorial || !badgeConfig.badges[tutorial]) {
     return res.status(400).json({
       error: "Did not get valid query string named [tutorial].",
     });
@@ -28,7 +28,7 @@ module.exports = async (req, res) => {
 
   const { login: user } = await userResponse.json();
 
-  const query = `repo:${badgeConfig[tutorial].githubRepo}+author:${user}+type:pr`;
+  const query = `repo:${badgeConfig.badges[tutorial].githubRepo}+author:${user}+type:pr`;
 
   const prResponse = await fetch(
     `https://api.github.com/search/issues?q=${query}`,

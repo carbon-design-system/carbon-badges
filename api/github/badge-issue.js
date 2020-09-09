@@ -1,5 +1,6 @@
 require("dotenv").config();
 
+import { WebClient } from "@slack/web-api";
 import badgeConfig from "../../config/badges";
 import fetch from "node-fetch";
 
@@ -27,6 +28,9 @@ module.exports = async (req, res) => {
       error: "Did not get expected body [badge] and [email].",
     });
   }
+
+  // initialize Slack web client
+  const slack = new WebClient(process.env.SLACK_TOKEN);
 
   // get GitHub user to 1) validate token and 2) get first and last name
   const user = await fetch("https://api.github.com/user", {
@@ -58,7 +62,7 @@ module.exports = async (req, res) => {
       },
       body: JSON.stringify({
         recipient_email: email,
-        badge_template_id: badgeConfig[badge].acclaimTemplate,
+        badge_template_id: badgeConfig.badges[badge].acclaimTemplate,
         issued_to_first_name: user.name.trim().split(" ")[0],
         issued_to_last_name: user.name.trim().split(" ").reverse()[0],
         issued_at: new Date().toISOString(),
@@ -66,7 +70,7 @@ module.exports = async (req, res) => {
     }
   ).then((response) => response.json());
 
-  // if success, send feedback to SurveyGizmo
+  // if success, send feedback to SurveyGizmo and Slack
   if (badgesResponse.data && badgesResponse.data["accept_badge_url"]) {
     await fetch(process.env.SURVEYGIZMO_REQUEST_URI, {
       method: "PUT",
@@ -75,7 +79,7 @@ module.exports = async (req, res) => {
       },
       body: JSON.stringify({
         data: {
-          "2": { value: badgeConfig[badge].label },
+          "2": { value: badgeConfig.badges[badge].label },
           "3": { value: questionHowDescribe },
           "4": { value: questionLikeBest },
           "5": { value: questionHowImprove },
@@ -83,6 +87,29 @@ module.exports = async (req, res) => {
           "7": { value: questionFreeform },
         },
       }),
+    });
+
+    const blocks = [
+      {
+        type: "section",
+        text: {
+          type: "mrkdwn",
+          text: `:${badge}: A *${badgeConfig.badges[badge].label}* badge was issued. :${badge}:`,
+        },
+      },
+    ];
+
+    blocks[0].text.text += Object.keys(badgeConfig.questions)
+      .map((question) => {
+        return req.body[question]
+          ? `\n>${badgeConfig.questions[question]}\n>*${req.body[question]}*`
+          : "";
+      })
+      .join("");
+
+    await slack.chat.postMessage({
+      blocks,
+      channel: process.env.SLACK_CHANNEL,
     });
   }
 

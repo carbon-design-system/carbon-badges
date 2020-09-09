@@ -35,8 +35,8 @@ module.exports = async (req, res) => {
     res.status(400).json({ error: "Bad request." });
   }
 
-  const acclaimTemplates = Object.keys(badgeConfig).map(
-    (name) => badgeConfig[name].acclaimTemplate
+  const acclaimTemplates = Object.keys(badgeConfig.badges).map(
+    (name) => badgeConfig.badges[name].acclaimTemplate
   );
 
   const allBadges = await limiter.schedule(() => {
