@@ -48,7 +48,7 @@ const MyBadges = () => {
       {badges && badges.length > 0 && (
         <Row>
           {badges.map((badge, i) => (
-            <Column key={i} colMd={3} colLg={3} noGutterMdLeft>
+            <Column key={i} colSm={2} colMd={3} colLg={3} noGutterMdLeft>
               <ArticleCard
                 subTitle={
                   badge.state.charAt(0).toUpperCase() + badge.state.slice(1)

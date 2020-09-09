@@ -43,11 +43,17 @@ module.exports = async (req, res) => {
     .then((response) => response.json())
     .catch((error) => res.status(401).json({ error: error.message }));
 
-  if (!user || !user.name) {
+  if (!user) {
     return res.status(401).json({
-      error: "Could not retrieve GitHub user's name.",
+      error: "Could not retrieve GitHub user.",
     });
   }
+
+  // Acclaim API requires first and last name, but GitHub only has one user name
+  // default to using GitHub username for both badge first and last name
+  const name = user.name || user.login;
+  const firstName = name.trim().split(" ")[0];
+  const lastName = name.trim().split(" ").reverse()[0];
 
   // issue badge
   const badgesResponse = await fetch(
@@ -63,8 +69,8 @@ module.exports = async (req, res) => {
       body: JSON.stringify({
         recipient_email: email,
         badge_template_id: badgeConfig.badges[badge].acclaimTemplate,
-        issued_to_first_name: user.name.trim().split(" ")[0],
-        issued_to_last_name: user.name.trim().split(" ").reverse()[0],
+        issued_to_first_name: firstName,
+        issued_to_last_name: lastName,
         issued_at: new Date().toISOString(),
       }),
     }
