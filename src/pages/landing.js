@@ -23,9 +23,9 @@ const Landing = () => {
   return (
     <Layout homepage>
       <Helmet title="Carbon Badges" />
-      <div class="bx--grid bx--grid--full-width">
-        <div class="bx--row">
-          <div class="bx--col-lg-8 bx--col-md-7">
+      <div className="bx--grid bx--grid--full-width">
+        <div className="bx--row">
+          <div className="bx--col-lg-8 bx--col-md-7">
             <h1 className={style.heading}>
               The Carbon Design System offers IBM Digital Badges based on
               completion of the{" "}
@@ -36,16 +36,20 @@ const Landing = () => {
               <a href="https://www.carbondesignsystem.com/tutorial/react/overview">
                 React
               </a>
-              , and{" "}
+              ,{" "}
               <a href="https://www.carbondesignsystem.com/tutorial/vue/overview">
                 Vue
-              </a>{" "}
+              </a>
+              , and{" "}
+              <a href="https://www.ibm.com/standards/carbon/developing/web-components-tutorial/overview">
+                Carbon for IBM.com Web Components
+              </a>
               tutorials. Log in with GitHub to view and apply for Carbon badges.
             </h1>
           </div>
         </div>
-        <div class="bx--row">
-          <div class="bx--col-lg-3">
+        <div className="bx--row">
+          <div className="bx--col-lg-3">
             <Button
               className={style.button}
               kind="primary"
@@ -57,16 +61,16 @@ const Landing = () => {
             </Button>
           </div>
         </div>
-        <div class="bx--row">
-          <div class="bx--col">
+        <div className="bx--row">
+          <div className="bx--col">
             <p className={style.copy}>
               Don't have a GitHub account?{" "}
               <a href="https://github.com/join">Join GitHub</a>
             </p>
           </div>
         </div>
-        <div class="bx--row">
-          <div class="bx--offset-lg-10 bx--col-lg-2 bx--offset-md-6 bx--col-md-2 bx--offset-sm-3 bx--col-sm-1">
+        <div className="bx--row">
+          <div className="bx--offset-lg-10 bx--col-lg-2 bx--offset-md-6 bx--col-md-2 bx--offset-sm-3 bx--col-sm-1">
             <img
               className={style.pictogram}
               src={pictogram}

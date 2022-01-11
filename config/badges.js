@@ -15,6 +15,11 @@ const config = {
       acclaimTemplate: "8d740300-9256-40d2-9a1c-c237d1138d86",
       githubRepo: "carbon-design-system/carbon-tutorial-vue",
     },
+    c4ibmwc: {
+      label: "Carbon for IBM.com Web Components",
+      acclaimTemplate: "b383d314-25c0-4295-a86c-c6dc77e40feb",
+      githubRepo: "carbon-design-system/carbon-for-ibm-dotcom-tutorial",
+    },
   },
   questions: {
     questionHowDescribe:
