@@ -95,12 +95,14 @@ module.exports = async (req, res) => {
       }),
     });
 
+    const emoji = badge === 'c4ibmwc' ? 'web-components' : badge;
+
     const blocks = [
       {
         type: "section",
         text: {
           type: "mrkdwn",
-          text: `:${badge}: *${badgeConfig.badges[badge].label}* badge was issued :${badge}:`,
+          text: `:${emoji}: *${badgeConfig.badges[badge].label}* badge was issued :${emoji}:`,
         },
       },
     ];
