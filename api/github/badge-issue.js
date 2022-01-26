@@ -8,7 +8,7 @@ module.exports = async (req, res) => {
   const { access_token: accessToken } = req.query;
 
   const {
-    badge: { id: badge }, // `angular`, `react`, or `vue`
+    badge: { id: badge }, // `angular`, `react`, or `vue`, or `c4ibmwc`
     email,
     questionHowDescribe,
     questionLikeBest,
