@@ -30,20 +30,20 @@ const Landing = () => {
               The Carbon Design System offers IBM Digital Badges based on
               completion of the{" "}
               <a href="https://www.carbondesignsystem.com/tutorial/angular/overview">
-                Angular
+                Carbon Angular
               </a>
               ,{" "}
               <a href="https://www.carbondesignsystem.com/tutorial/react/overview">
-                React
+                Carbon React
               </a>
               ,{" "}
               <a href="https://www.carbondesignsystem.com/tutorial/vue/overview">
-                Vue
+                Carbon Vue
               </a>
               , and{" "}
               <a href="https://www.ibm.com/standards/carbon/developing/web-components-tutorial/overview">
                 Carbon for IBM.com Web Components
-              </a>
+              </a>{" "}
               tutorials. Log in with GitHub to view and apply for Carbon badges.
             </h1>
           </div>
